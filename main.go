@@ -226,20 +226,39 @@ var db *sql.DB
 
 func main() {
 	// Connect to PostgreSQL
-	var err error
-	dsn := "user=postgres dbname=kafka password=123 host=10.9.2.30 sslmode=disable"
-	db, err = sql.Open("postgres", dsn)
-	if err != nil {
-		log.Fatal("DB connection error:", err)
-	}
-	if err = db.Ping(); err != nil {
-		log.Fatal("DB ping error:", err)
-	}
-	log.Println("✅ Connected to PostgreSQL.")
+	// var err error
+	// dsn := "user=postgres dbname=kafka password=123 host=10.9.2.30 sslmode=disable"
+	// db, err = sql.Open("postgres", dsn)
+	// if err != nil {
+	// 	log.Fatal("DB connection error:", err)
+	// }
+	// if err = db.Ping(); err != nil {
+	// 	log.Fatal("DB ping error:", err)
+	// }
+	// log.Println("✅ Connected to PostgreSQL.")
+	 dbURL := os.Getenv("DATABASE_URL")
+    if dbURL == "" {
+        log.Fatal("DATABASE_URL environment variable not set")
+    }
+
+    // Connect to the PostgreSQL database
+    db, err := sql.Open("postgres", dbURL)
+    if err != nil {
+        log.Fatalf("Failed to connect to database: %v", err)
+    }
+    defer db.Close()
+
+    // Test the DB connection
+    err = db.Ping()
+    if err != nil {
+        log.Fatalf("Database ping failed: %v", err)
+    }
+    log.Println("✅ Connected to the database successfully")
 
 	// Serve frontend static files (index.html, upload.html, scripts)
-	http.Handle("/", http.FileServer(http.Dir("./frontend")))
-
+	//http.Handle("/", http.FileServer(http.Dir("./frontend")))
+	fs := http.FileServer(http.Dir("./frontend"))
+    http.Handle("/", fs)
 	// Serve uploaded photos
 	http.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
 
@@ -249,7 +268,11 @@ func main() {
 	http.HandleFunc("/api/delete", deletePhotoHandler)
 
 	log.Println("🚀 Server started at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	//log.Fatal(http.ListenAndServe(":8080", nil))
+	err = http.ListenAndServe(":8080", nil)
+    if err != nil {
+        log.Fatalf("Server failed to start: %v", err)
+    }
 }
 
 // func uploadPhotoHandler(w http.ResponseWriter, r *http.Request) {
