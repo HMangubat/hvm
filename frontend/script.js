@@ -1,52 +1,3 @@
-// document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-//   e.preventDefault();
-
-//   const formData = new FormData();
-//   const file = document.getElementById('photo').files[0];
-//   formData.append('photo', file);
-
-//   try {
-//     const res = await fetch('/api/upload-photo', {
-//       method: 'POST',
-//       body: formData,
-//     });
-
-//     const msg = await res.text();
-//     document.getElementById('uploadStatus').textContent = msg;
-
-//     // Show preview
-//     const preview = document.getElementById('previewImage');
-//     preview.src = `/uploads/${file.name}`;
-//     preview.style.display = 'block';
-
-//     // Refresh gallery
-//     loadGallery();
-//   } catch (err) {
-//     document.getElementById('uploadStatus').textContent = 'Error: ' + err.message;
-//   }
-// });
-
-// async function loadGallery() {
-//   try {
-//     const res = await fetch('/api/photos');
-//     const files = await res.json();
-
-//     const gallery = document.getElementById('photoGallery');
-//     gallery.innerHTML = '';
-
-//     files.forEach(name => {
-//       const img = document.createElement('img');
-//       img.src = `/uploads/${name}`;
-//       img.style.maxWidth = '150px';
-//       img.style.margin = '10px';
-//       gallery.appendChild(img);
-//     });
-//   } catch (err) {
-//     console.error('Failed to load gallery:', err);
-//   }
-// }
-
-// window.addEventListener('DOMContentLoaded', loadGallery);
 
 document.getElementById('uploadForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -123,13 +74,11 @@ async function loadGallery() {
       updateBtn.textContent = 'Update';
       updateBtn.style.marginLeft = '5px';
       updateBtn.onclick = () => {
-        const newFilename = prompt("Enter new filename (with extension):", photo.filename);
-        if (!newFilename) return;
-        const newUserId = prompt("Enter new user ID:", photo.user_id);
-        if (!newUserId) return;
-
-        updatePhoto(photo.id, newFilename, newUserId);
+        const newDescription = prompt("Enter new description:", photo.description);
+        if (newDescription === null) return; // Cancelled
+        updatePhoto(photo.id, newDescription);
       };
+
 
       wrapper.appendChild(img);
       wrapper.appendChild(info);
@@ -156,7 +105,7 @@ async function deletePhoto(id) {
   }
 }
 
-async function updatePhoto(id, newFilename, newUserId) {
+async function updatePhoto(id, description) {
   try {
     const res = await fetch('/api/photos/update', {
       method: 'PUT',
@@ -165,8 +114,7 @@ async function updatePhoto(id, newFilename, newUserId) {
       },
       body: JSON.stringify({
         id,
-        filename: newFilename,
-        user_id: newUserId,
+        description: description,
       }),
     });
 
