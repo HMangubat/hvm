@@ -226,28 +226,19 @@ var db *sql.DB
 
 func main() {
 	// Connect to PostgreSQL
-	// var err error
-	// dsn := "user=postgres dbname=kafka password=123 host=10.9.2.30 sslmode=disable"
-	// db, err = sql.Open("postgres", dsn)
-	// if err != nil {
-	// 	log.Fatal("DB connection error:", err)
-	// }
-	// if err = db.Ping(); err != nil {
-	// 	log.Fatal("DB ping error:", err)
-	// }
-	// log.Println("✅ Connected to PostgreSQL.")
-	 dbURL := os.Getenv("DATABASE_URL")
-    if dbURL == "" {
-        log.Fatal("DATABASE_URL environment variable not set")
-    }
-
-    // Connect to the PostgreSQL database
-    db, err := sql.Open("postgres", dbURL)
-    if err != nil {
-        log.Fatalf("Failed to connect to database: %v", err)
-    }
-    defer db.Close()
-
+	var err error
+	
+	dsn := "user=hvm dbname=hvmloft_shms password=PDy57XR8ZuIqwJBjHznHzQjI9VRQMEyg host=dpg-d0v74ji4d50c73e7v19g-a sslmode=disable"
+	
+	db, err = sql.Open("postgres", dsn)
+	if err != nil {
+		log.Fatal("DB connection error:", err)
+	}
+	if err = db.Ping(); err != nil {
+		log.Fatal("DB ping error:", err)
+	}
+	log.Println("✅ Connected to PostgreSQL.")
+	
     // Test the DB connection
     err = db.Ping()
     if err != nil {
