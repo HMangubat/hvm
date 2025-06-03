@@ -258,9 +258,9 @@ func main() {
 	http.HandleFunc("/api/photos", getAllPhotosHandler)
 	http.HandleFunc("/api/delete", deletePhotoHandler)
 
-	log.Println("🚀 Server started at http://localhost:8080")
+	log.Println("🚀 Server started at http://localhost:8092")
 	//log.Fatal(http.ListenAndServe(":8080", nil))
-	err = http.ListenAndServe(":0902", nil)
+	err = http.ListenAndServe(":8092", nil)
     if err != nil {
         log.Fatalf("Server failed to start: %v", err)
     }
